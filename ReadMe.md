@@ -6,4 +6,4 @@ How to Run: This is information someone would use to run your project on their m
 
 Roadmap of future improvements: What additional features or functionality would be helpful to a user? 
 
-License information: This should include information about the MIT license. 
+License information: MIT license (MIT/xPRO Coding Camp Assignment)
