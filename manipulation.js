@@ -1,5 +1,7 @@
 //use accessToken on mapbox
 mapboxgl.accessToken = 'pk.eyJ1IjoidmlkYTAyMTQiLCJhIjoiY2wwdmM4a2pkMGF5MDNkczJjOWt2eDNkeSJ9.6wpj-du0aa0meKKcq6ADEg';
+// require testHello from './testExportFunction';
+// const { testHello } = require('./testExportFunction');
 
 //create a new map
 const map = new mapboxgl.Map({
@@ -22,7 +24,7 @@ async function getBusLocations(){
 async function run(locationHistory){
     //const locations = await getBusLocations();
 
-    addBusMarker(locationHistory);
+    handleBusMarkers(locationHistory);
     // console.log(new Date());
     //console.log(locations);
 
@@ -36,25 +38,30 @@ async function run(locationHistory){
 const locationHistory = {};
 run(locationHistory);
 
-async function addBusMarker(locationHistory){
+function getLocationData(location) {
+    let lat = location.attributes.latitude;
+    let lng = location.attributes.longitude;
+    let busId = location.id;
+
+    return {
+        lat, lng, busId
+    }
+}
+
+async function handleBusMarkers(locationHistory){
     // get bus data    
 
-
    const locations = await getBusLocations();
-   console.log('check locations', Array.isArray(locations));
+
    for (let i = 0; i < locations.length; i += 1) {
         console.log('i', i);
 
         const location = locations[i];
-        console.log('location', location);
-
-        let lat = location.attributes.latitude;
-        let lng = location.attributes.longitude;
-        let busId = location.id;
+        const { lat, lng, busId } = getLocationData(location);
 
         console.log('locationHistory', locationHistory);
 
-        if (!locationHistory[busId] ) {
+        if (!locationHistory[busId]) {
             //find out if a bus id exists already. If it does not exist, add a new marker for the new bus
             console.log('NEW')
             const newMarker = new mapboxgl.Marker()
@@ -67,71 +74,7 @@ async function addBusMarker(locationHistory){
             console.log('OLD')
             const existingMarker = locationHistory[busId];
             console.log('OLD existingMarker', existingMarker);
-
             existingMarker.setLngLat([lng, lat]);
         }
    }
-
-//    locations.forEach((location) => {
-//        let lat = location.attributes.latitude;
-//        let lng = location.attributes.longitude;
-//        let busId = location.id;
-
-
-//        locationHistory[busId] = { 
-//            latitude: lat, 
-//            longitude: lng
-//         }
-//         console.log('locationHistory', locationHistory);
-//        const marker = new mapboxgl.Marker()
-//            .setLngLat([lng, lat])
-//            .setPopup(new mapboxgl.Popup().setHTML(`Bus Number: ${busId}`)) 
-//            .addTo(map)
-//         // console.log('marker', marker);
-
-//    })
 }
-
-/*map.on('load', async() => {
-
-    //get the initial location of the buses
-    const locations = await getBusLocations();
-    
-    //add the bus location as a source
-    map.addSource('bus-locations', {
-        type: 'json',
-        data: locations
-    });
-    
-    //add the blue bus symbol
-    map.addLayer({
-        'id': 'bus-locations',
-        'type': 'symbol',
-        'source': 'bus-locations',
-        'layout': {
-            'icon-image': '/.blue.png'
-        }
-    });
-
-    const updateBusLocations = setInterval(async () => {
-        const locations = await getBusLocations();
-        map.getSource('bus-locations').setData(locations);
-    }, 15000);
-
-})
-
-
-
-
-async function run(){
-    addBusMarker();
-    setTimeout(() => {
-        const locations = await getBusLocations();
-        if(locations.length === 0) return;
-        if(locations.length > markers.length){
-
-        }
-        
-    }, 15000);
-}
-*/
