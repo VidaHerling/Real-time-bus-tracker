@@ -42,17 +42,17 @@ const locationHistory = {};
 run(locationHistory);
 
 async function handleBusMarkers(locationHistory){
-    // get bus data    
+  // get bus data    
   const locations = await getBusLocations();
 
-for (let i = 0; i < locations.length; i += 1) {
-//console.log('i', i);
+  for (let i = 0; i < locations.length; i += 1) {
+  //console.log('i', i);
 
-const location = locations[i];
-const { lat, lng, busId } = getLocationData(location);
-//console.log('locationHistory', locationHistory);
+  const location = locations[i];
+  const { lat, lng, busId } = getLocationData(location);
+  //console.log('locationHistory', locationHistory);
 
-if (!locationHistory[busId]) {
+  if (!locationHistory[busId]) {
     //find out if a bus id exists already. If it does not exist, add a new marker for the new bus
     const el = document.createElement('div'); //create a div in index.html
     el.className = "marker"; //assign a className "marker" attribute to the div; in the CSS file, the marker was from a picture
@@ -62,11 +62,11 @@ if (!locationHistory[busId]) {
         .addTo(map)
 
     locationHistory[busId] = newMarker; //save the newMarker object in the locationHistory object
-} else {
 
+    } else {
     const existingMarker = locationHistory[busId];
     console.log('OLD existingMarker', existingMarker);
     existingMarker.setLngLat([lng, lat]);
-}
-}
+    }
+  }
 }
